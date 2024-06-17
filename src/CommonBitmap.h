@@ -13,7 +13,6 @@ class CommonBitmap :public Bitmap
 	const char* error_;
 public:
 	CommonBitmap();
-	~CommonBitmap() override = default;
 	bool toBoolResult(unsigned int error);
 	bool load(const unsigned char* data, unsigned int size);
 	bool load(const char* path);

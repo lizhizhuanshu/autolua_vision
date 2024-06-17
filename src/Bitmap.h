@@ -8,7 +8,6 @@ public:
 	unsigned int height_;
 	int rowShift_;
 	int pixelStride_;
-	virtual ~Bitmap() = default;
 };
 
 bool isImage(Bitmap*bitmap,int x,int y,Bitmap* templateImage,int shiftSum);
