@@ -81,6 +81,19 @@ void pushBitmapMetatable(struct lua_State*L){
   }
 }
 
+void eachCompareColorMethod(CompareColorMethodReceiver receiver, void *data){
+  luaL_Reg methods[] = {
+    COMMON_BITMAP_METHODS
+  };
+
+  for(auto &method:methods){
+    if(method.name == nullptr) {
+      break;
+    }
+    receiver(method.name, method.func, data);
+  }
+}
+
 auto luaopen_alv(struct lua_State *L) -> int{
   luaL_checkversion(L);
 
