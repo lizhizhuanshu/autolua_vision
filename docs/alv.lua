@@ -75,11 +75,11 @@ end
 ---@param x2 integer 要查找的范围的横轴结束点坐标
 ---@param y2 integer 要查找的范围的纵轴结束点坐标
 ---@param color ColorDescribe 颜色描述
----@param order FindOrder 查找方向
 ---@param sim number 相似度，取值范围 0-1
+---@param order FindOrder 查找方向
 ---@return integer 找到的横轴坐标，没有找到则返回 -1
 ---@return integer 找到的纵轴坐标，没有找到则返回 -1
-function M.findColor(bitmap,x1,y1,x2,y2,color,order,sim)
+function M.findColor(bitmap,x1,y1,x2,y2,color,sim,order)
   error("not implemented")
 end
 
@@ -99,11 +99,11 @@ end
 ---@param x2 integer 要查找的范围的横轴结束点坐标
 ---@param y2 integer 要查找的范围的纵轴结束点坐标
 ---@param feature Feature 特征描述
----@param order FindOrder 查找方向
 ---@param sim number 相似度，取值范围 0-1
+---@param order FindOrder 查找方向
 ---@return integer 找到的横轴坐标，没有找到则返回 -1
 ---@return integer 找到的纵轴坐标，没有找到则返回 -1
-function M.findFeature(bitmap,x1,y1,x2,y2,feature,order,sim)
+function M.findFeature(bitmap,x1,y1,x2,y2,feature,sim,order)
   error("not implemented")
 end
 
@@ -136,11 +136,11 @@ end
 ---@param x2 integer 要查找的范围的横轴结束点坐标
 ---@param y2 integer 要查找的范围的纵轴结束点坐标
 ---@param image ImageDescribe 图像描述
----@param order FindOrder 查找方向
 ---@param sim number 相似度，取值范围 0-1
+---@param order FindOrder 查找方向
 ---@return integer 找到的横轴坐标，没有找到则返回 -1
 ---@return integer 找到的纵轴坐标，没有找到则返回 -1
-function M.findImage(bitmap,x1,y1,x2,y2,image,order,sim)
+function M.findImage(bitmap,x1,y1,x2,y2,image,sim,order)
   error("not implemented")
 end
 

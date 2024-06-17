@@ -16,6 +16,7 @@
 #include "vision_color.h"
 #include "vision_feature.h"
 #include "vision_util.h"
+#include <iostream>
 
 using namespace autolua;
 
@@ -148,7 +149,7 @@ static auto ensureSimilarity(lua_State*L,int index){
   if(sim < 0 || sim > 1){
     luaL_error(L, "Similarity must be between 0 and 1");
   }
-  return 0.0;
+  return sim;
 }
 
 static auto ensureFindOrder(lua_State*L,int index)->int{
@@ -406,7 +407,7 @@ auto findFeature(lua_State*L)->int{
 	int y1 = luaL_checkinteger(L, 5);
 	checkCoordinates(bitmap, L, x, y, x1, y1);
   auto sim = ensureSimilarity(L, 7);
-  int direction = ensureFindOrder(L, 8);
+  int order = ensureFindOrder(L, 8);
 	size_t featureSize = 0;
 	const char * featureString = luaL_checklstring(L,6,&featureSize);
   FeatureCompositionRoot feature;
@@ -415,12 +416,15 @@ auto findFeature(lua_State*L)->int{
   }
   auto shiftSum = (1-sim)*MAX_COLOR_SHIFT*feature.count;
   Point out(-1,-1);
-  bool result = findFeature(bitmap, x, y, x1, y1, &feature, shiftSum, direction, &out);
+
+  bool result = findFeature(bitmap, x, y, x1, y1, &feature, shiftSum, order, &out);
   freeFeatureComposition(&feature);
   if(!result){
     out.x = -1;
     out.y = -1;
   }
+  lua_pushinteger(L, out.x);
+  lua_pushinteger(L, out.y);
 	return 2;
 }
 
@@ -548,6 +552,7 @@ class BitmapsFinder{
   std::vector<CommonBitmap>* mImages;
   std::vector<int> mShiftSums;
   Point result;
+  int resultImage = 0;
 public:
   BitmapsFinder(Bitmap*bitmap,std::vector<CommonBitmap>*images,int onePointShiftSum)
     :mBitmap(bitmap),mImages(images){
@@ -560,6 +565,7 @@ public:
       if(isImage(mBitmap, x, y, &mImages->at(i), mShiftSums.at(i))){
         result.x = x;
         result.y = y;
+        resultImage = i+1;
         return true;
       }
     }
@@ -567,6 +573,10 @@ public:
   }
   Point& getResult(){
     return result;
+  }
+
+  int getResultImage(){
+    return resultImage;
   }
 };
 
@@ -582,7 +592,7 @@ auto findImage(Bitmap*bitmap,int x,int y,int x1,int y1,CommonBitmap*image,int sh
 	return result;
 }
 
-auto findImage(Bitmap*bitmap,int x,int y,int x1,int y1,std::vector<CommonBitmap>*images,int onePointShift,int direction,Point*out)->bool{
+auto findImage(Bitmap*bitmap,int x,int y,int x1,int y1,std::vector<CommonBitmap>*images,int onePointShift,int direction,Point*out)->int{
   BitmapsFinder finder(bitmap, images, onePointShift);
   bool result = orderFindColor(bitmap, x, y, x1, y1, direction, &finder);
   if (result && out)
@@ -590,8 +600,9 @@ auto findImage(Bitmap*bitmap,int x,int y,int x1,int y1,std::vector<CommonBitmap>
     Point& point = finder.getResult();
     out->x = point.x;
     out->y = point.y;
+    return finder.getResultImage();
   }
-  return result;
+  return 0;
 }
 
 
@@ -625,10 +636,10 @@ auto findImage(lua_State*L)->int{
         return 3;
       }
     }else{
-      if(findImage(bitmap, x, y, x1, y1, &images ,onePointShiftSum, direction, &out)){
+      if(auto r = findImage(bitmap, x, y, x1, y1, &images ,onePointShiftSum, direction, &out)){
         lua_pushinteger(L, out.x);
         lua_pushinteger(L, out.y);
-        lua_pushinteger(L, 1);
+        lua_pushinteger(L, r);
         return 3;
       }
     }

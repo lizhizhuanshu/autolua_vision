@@ -126,7 +126,12 @@ inline FeatureFinder<TFeature,TShift>::FeatureFinder(
 template<class TFeature,class TShift>
 inline bool FeatureFinder<TFeature,TShift>::compare(int x, int y, const unsigned char* color)
 {
-	return isFeature(mBitmap, x, y, mFeature, mShift);
+	if(isFeature(mBitmap, x, y, mFeature, mShift)){
+		mPoint.x = x;
+		mPoint.y = y;
+		return true;
+	}
+	return false;
 }
 
 template<class TFeature,class TShift>

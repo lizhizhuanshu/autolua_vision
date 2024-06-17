@@ -46,7 +46,7 @@ TEST(Encode, decodeColor) {
 }
 
 TEST(Encode,decodeFeature){
-  std::string str = "0|0|000000,1|3|FF00FF-FF00FF|100208";
+  std::string str = "0|0|000000,-1|3|FF00FF-FF00FF|100208";
   autolua::FeatureCompositionRoot root;
   ASSERT_TRUE(autolua::decodeFeature(str.c_str(), str.size(), &root));
   ASSERT_EQ(root.count, 2);
@@ -54,7 +54,7 @@ TEST(Encode,decodeFeature){
   ASSERT_EQ(root.data->y, 0);
   ASSERT_EQ(root.data->color->color.type, autolua::TColorType::ALONE);
   auto next = root.data->next;
-  ASSERT_EQ(next->x, 1);
+  ASSERT_EQ(next->x, -1);
   ASSERT_EQ(next->y, 3);
   ASSERT_EQ(next->color->color.type, autolua::TColorType::COLOR_GAMUT);
   auto gamut = (autolua::ColorGamut*)next->color->color.data;

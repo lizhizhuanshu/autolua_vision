@@ -14,11 +14,11 @@ namespace autolua {
   auto toInt(const char* str, int size,int&pos, int& value)->bool{
     value = 0;
     int sign = 1;
-    if(str[0] == '-'){
-      if(size-pos<2 || !isNumber(str[1]))return false;
+    if(str[pos] == '-'){
+      if(size-pos<2 || !isNumber(str[pos+1]))return false;
       sign = -1;
       pos++;
-    }else if(!isNumber(str[0])){
+    }else if(!isNumber(str[pos])){
       return false;
     }
     char c = 0;

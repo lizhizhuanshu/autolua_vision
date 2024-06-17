@@ -9,8 +9,8 @@ namespace autolua {
 
 struct FeatureComposition{
   FeatureComposition *next;
-  uint16_t x;
-  uint16_t y;
+  int16_t x;
+  int16_t y;
   ColorComposition* color;
 };
 
