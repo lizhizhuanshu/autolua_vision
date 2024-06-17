@@ -12,7 +12,7 @@ public:
 
 bool isImage(Bitmap*bitmap,int x,int y,Bitmap* templateImage,int shiftSum);
 
-}
+} //namespace autolua
 
 
 #endif// __VISION_BITMAP_H__
