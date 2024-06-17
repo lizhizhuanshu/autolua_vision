@@ -10,8 +10,7 @@ option(VISION_STATIC "build static library" OFF)
 option(BUILD_TESTING "build tests" ON)
 
 
-include_directories(${OpenCV_INCLUDE_DIRS} 
-  ./src ./lodepng)
+include_directories(./src ./lodepng)
 
 aux_source_directory(./src DIR_SRCS)
 list(APPEND DIR_SRCS ./lodepng/lodepng.cpp)
