@@ -16,7 +16,7 @@
 #include "vision_color.h"
 #include "vision_feature.h"
 #include "vision_util.h"
-#include <iostream>
+
 
 using namespace autolua;
 
@@ -68,12 +68,8 @@ static auto getImageSize(lua_State*L)->int;
 
 
 
-
-
-auto luaopen_alv(struct lua_State *L) -> int{
-  luaL_checkversion(L);
-
-  if(luaL_newClassMetatable(Bitmap, L)){
+void pushBitmapMetatable(struct lua_State*L){
+    if(luaL_newClassMetatable(Bitmap, L)){
     luaL_Reg methods[] = {
       COMMON_BITMAP_METHODS
       
@@ -83,6 +79,12 @@ auto luaopen_alv(struct lua_State *L) -> int{
     lua_pushvalue(L, -1);
     lua_setfield(L, -2, "__index");
   }
+}
+
+auto luaopen_alv(struct lua_State *L) -> int{
+  luaL_checkversion(L);
+
+  pushBitmapMetatable(L);
 
   if(luaL_newClassMetatable(CommonBitmap, L)){
     lua_pushvalue(L, -2);
@@ -717,3 +719,6 @@ int getImageSize(lua_State*L){
   lua_pushinteger(L, image->height_);
   return 2;
 }
+
+
+
