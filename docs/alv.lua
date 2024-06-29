@@ -1,5 +1,7 @@
 
 local M = {}
+---@type FindOrder
+M.FindOrder = nil
 
 
 ---图色函数的查找方向

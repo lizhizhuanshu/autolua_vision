@@ -8,7 +8,7 @@
 
 using ResourceProvider = std::function<bool (const std::string path, std::string&)>;
 auto setResourceProvider(ResourceProvider provider) -> void;
-
+constexpr auto AUTOLUA_FIND_ORDER_NAME="FindOrder";
 #ifdef __cplusplus
 extern "C"
 {

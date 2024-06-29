@@ -133,7 +133,7 @@ auto luaopen_alv(struct lua_State *L) -> int{
 	PUSH_FIND_ORDER(L, -3, LEFT_RIGHT_DOWN_UP);
 	PUSH_FIND_ORDER(L, -3, RIGHT_LEFT_UP_DOWN);
 	PUSH_FIND_ORDER(L, -3, RIGHT_LEFT_DOWN_UP);
-	lua_setfield(L, -2, "FIND_ORDER");
+	lua_setfield(L, -2, AUTOLUA_FIND_ORDER_NAME);
 
   return 1;
 }
