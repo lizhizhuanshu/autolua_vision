@@ -20,6 +20,7 @@ void pushBitmapMetatable(struct lua_State*L);
 using CompareColorMethodReceiver = void (*)(const char *, lua_CFunction, void *);
 void eachCompareColorMethod(CompareColorMethodReceiver receiver, void*data);
 void eachCompareColorMethodByUpData(CompareColorMethodReceiver receiver, void *data);
+int injectOther(struct lua_State*L);
 #ifdef __cplusplus
 }
 #endif

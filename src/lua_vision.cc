@@ -73,7 +73,7 @@ static auto getImageSize(lua_State*L)->int;
 
 
 void pushBitmapMetatable(struct lua_State*L){
-    if(luaL_newClassMetatable(Bitmap, L)){
+  if(luaL_newClassMetatable(Bitmap, L)){
     luaL_Reg methods[] = {
       COMMON_BITMAP_METHODS
       
@@ -120,9 +120,7 @@ void eachCompareColorMethodByUpData(CompareColorMethodReceiver receiver, void *d
   }
 }
 
-auto luaopen_alv(struct lua_State *L) -> int{
-  luaL_checkversion(L);
-
+void ensureInjectCommonBitmap(lua_State*L){
   pushBitmapMetatable(L);
 
   if(luaL_newClassMetatable(CommonBitmap, L)){
@@ -136,11 +134,35 @@ auto luaopen_alv(struct lua_State *L) -> int{
     luaL_setfuncs(L, methods, 0);
   }
   lua_pop(L,2);
+}
 
+static void pushFindOrderTable(struct lua_State*L){
+  lua_newtable(L);
+  PUSH_FIND_ORDER(L, -3, UP_DOWN_LEFT_RIGHT);
+  PUSH_FIND_ORDER(L, -3, UP_DOWN_RIGHT_LEFT);
+  PUSH_FIND_ORDER(L, -3, DOWN_UP_LEFT_RIGHT);
+  PUSH_FIND_ORDER(L, -3, DOWN_UP_RIGHT_LEFT);
+  PUSH_FIND_ORDER(L, -3, LEFT_RIGHT_UP_DOWN);
+  PUSH_FIND_ORDER(L, -3, LEFT_RIGHT_DOWN_UP);
+  PUSH_FIND_ORDER(L, -3, RIGHT_LEFT_UP_DOWN);
+  PUSH_FIND_ORDER(L, -3, RIGHT_LEFT_DOWN_UP);
+}
 
+int injectOther(struct lua_State*L){
+  lua_pushcfunction(L, loadImage);
+  lua_setglobal(L, "loadImage");
+  ensureInjectCommonBitmap(L);
+  lua_geti(L, LUA_REGISTRYINDEX, LUA_RIDX_GLOBALS);
+  pushFindOrderTable(L);
+  lua_setfield(L, -2, AUTOLUA_FIND_ORDER_NAME);
+  return 0;
+}
+
+auto luaopen_alv(struct lua_State *L) -> int{
+  luaL_checkversion(L);
+  ensureInjectCommonBitmap(L);
   luaL_Reg methods[] = {
     BASE_METHODS
-
     {"saveImage",saveImageTo},
     {"cloneImage",cloneImage},
     {"getImageSize",getImageSize},
@@ -148,19 +170,8 @@ auto luaopen_alv(struct lua_State *L) -> int{
     {nullptr, nullptr}
   };
   luaL_newlib(L, methods);
-
-
-	lua_newtable(L);
-	PUSH_FIND_ORDER(L, -3, UP_DOWN_LEFT_RIGHT);
-	PUSH_FIND_ORDER(L, -3, UP_DOWN_RIGHT_LEFT);
-	PUSH_FIND_ORDER(L, -3, DOWN_UP_LEFT_RIGHT);
-	PUSH_FIND_ORDER(L, -3, DOWN_UP_RIGHT_LEFT);
-	PUSH_FIND_ORDER(L, -3, LEFT_RIGHT_UP_DOWN);
-	PUSH_FIND_ORDER(L, -3, LEFT_RIGHT_DOWN_UP);
-	PUSH_FIND_ORDER(L, -3, RIGHT_LEFT_UP_DOWN);
-	PUSH_FIND_ORDER(L, -3, RIGHT_LEFT_DOWN_UP);
+	pushFindOrderTable(L);
 	lua_setfield(L, -2, AUTOLUA_FIND_ORDER_NAME);
-
   return 1;
 }
 
@@ -490,6 +501,7 @@ auto loadImages(const char*names,size_t size,std::vector<CommonBitmap>&images)->
   std::string name;
   std::string data;
   for(size_t i = 0; i < size; i++){
+    data.clear();
     if(names[i] == '|'){
       auto &p = images.emplace_back();
       name = std::string(names + start, i - start);
